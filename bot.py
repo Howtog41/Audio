@@ -1,8 +1,7 @@
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputFile
-from aiogram.filters import Command  # Updated import
-from aiogram.types.message import Audio, Voice
+from aiogram.filters import Command  # Corrected import
 from aiogram import F
 from aiogram.utils import executor
 from pydub import AudioSegment
@@ -45,7 +44,7 @@ async def send_welcome(message: types.Message):
 async def handle_audio(message: types.Message):
     try:
         # Download file
-        file = await message.voice.get_file() if message.voice else await message.audio.get_file()
+        file = await bot.get_file(message.voice.file_id if message.voice else message.audio.file_id)
         file_path = f"{file.file_id}.ogg"
         await bot.download_file(file.file_path, file_path)
 
