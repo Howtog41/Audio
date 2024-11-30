@@ -1,0 +1,5 @@
+aiogram
+pydub
+transformers
+openai-whisper 
+ffmpeg-python
