@@ -10,7 +10,7 @@ from transformers import pipeline
 import asyncio
 
 # Initialize bot and dispatcher
-API_TOKEN = "YOUR_BOT_TOKEN"
+API_TOKEN = "7486102855:AAHTSup6gBCUnFn02nTQZF5GhmwlmMfuwZc"
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
