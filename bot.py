@@ -1,8 +1,9 @@
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputFile
-from aiogram.dispatcher.filters import Command
+from aiogram.filters import Command  # Updated import
 from aiogram.types.message import Audio, Voice
+from aiogram import F
 from aiogram.utils import executor
 from pydub import AudioSegment
 import whisper
@@ -12,7 +13,7 @@ import asyncio
 # Initialize bot and dispatcher
 API_TOKEN = "7486102855:AAHTSup6gBCUnFn02nTQZF5GhmwlmMfuwZc"
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 # Load Whisper and Summarization models
 whisper_model = whisper.load_model("base")
@@ -36,7 +37,11 @@ async def summarize_text(text):
     return summary[0]["summary_text"]
 
 # Handle audio and voice messages
-@dp.message_handler(content_types=[types.ContentType.VOICE, types.ContentType.AUDIO])
+@dp.message(Command("start"))
+async def send_welcome(message: types.Message):
+    await message.reply("Welcome! Send me an audio file or voice note to process.")
+
+@dp.message(F.voice | F.audio)
 async def handle_audio(message: types.Message):
     try:
         # Download file
@@ -66,11 +71,10 @@ async def handle_audio(message: types.Message):
     except Exception as e:
         await message.reply(f"An error occurred: {e}")
 
-# Start command handler
-@dp.message_handler(commands=["start"])
-async def send_welcome(message: types.Message):
-    await message.reply("Welcome! Send me an audio file or voice note to process.")
-
 # Run bot
+async def main():
+    dp.include_router(dp)  # Add dispatcher to router
+    await dp.start_polling(bot)
+
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
